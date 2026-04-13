@@ -612,6 +612,11 @@ function switchTab(id, el) {
     if (target) target.classList.add('active');
   }
   localStorage.setItem('pe_tab', id);
+  
+  // Dynamic Refresh for CodeMirror
+  if (id === 'practice' && cmEditor) {
+    setTimeout(() => cmEditor.refresh(), 50);
+  }
 }
 
 function runCode() {
@@ -1060,6 +1065,8 @@ function pythonHint(editor) {
     });
 
     restoreState();
+    // Force a layout refresh to fix initial alignment
+    cmEditor.refresh();
 
     // Hide localized editor loader
     const eSplash = document.getElementById('editor-loader');
