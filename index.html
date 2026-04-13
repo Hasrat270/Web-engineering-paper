@@ -1,7 +1,14 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Exam Lab</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-#app { background: #1e1e1e; color: #d4d4d4; font-family: 'Consolas', 'Courier New', monospace; min-height: 700px; }
+html, body { height: 100%; overflow: hidden; }
+body { display: flex; flex-direction: column; }
+#app { background: #1e1e1e; color: #d4d4d4; font-family: 'Consolas', 'Courier New', monospace; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 .topbar { background: #2d2d2d; border-bottom: 2px solid #9fef00; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 .logo { color: #9fef00; font-size: 15px; font-weight: 700; letter-spacing: 2px; }
 .dots span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px; }
@@ -9,10 +16,10 @@
 .tab { padding: 10px 20px; font-size: 13px; font-family: 'Consolas', monospace; color: #969696; cursor: pointer; border-right: 1px solid #3c3c3c; white-space: nowrap; transition: all 0.2s; border-top: 2px solid transparent; }
 .tab:hover { color: #d4d4d4; background: #2a2a2a; }
 .tab.active { color: #ffffff; background: #1e1e1e; border-top: 2px solid #9fef00; }
-.panel { display: none; }
-.panel.active { display: block; }
-.sidebar-layout { display: flex; height: calc(100% - 36px); min-height: 600px; }
-.sidebar { width: 200px; min-width: 160px; background: #252526; border-right: 1px solid #3c3c3c; padding: 8px 0; flex-shrink: 0; }
+.panel { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+.panel.active { display: flex; }
+.sidebar-layout { display: flex; flex: 1; overflow: hidden; }
+.sidebar { width: 200px; min-width: 160px; background: #252526; border-right: 1px solid #3c3c3c; padding: 8px 0; flex-shrink: 0; overflow-y: auto; }
 .sidebar-title { color: #bbb; font-size: 11px; padding: 8px 14px 6px; text-transform: uppercase; letter-spacing: 1px; }
 .file-item { padding: 7px 14px; font-size: 13px; color: #ccc; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
 .file-item:hover { background: #2a2d2e; }
@@ -20,15 +27,15 @@
 .file-icon { color: #519aba; font-size: 12px; }
 .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 .editor-header { background: #252526; border-bottom: 1px solid #3c3c3c; padding: 6px 14px; font-size: 12px; color: #969696; display: flex; align-items: center; gap: 8px; }
-.editor-wrap { display: flex; flex: 1; }
-.line-nums { background: #1e1e1e; color: #858585; font-size: 15px; line-height: 1.6; padding: 14px 10px 14px 14px; text-align: right; user-select: none; border-right: 1px solid #3c3c3c; min-width: 42px; font-family: 'Consolas', monospace; white-space: pre; }
-.code-display { flex: 1; padding: 14px 16px; font-size: 15px; line-height: 1.6; font-family: 'Consolas', monospace; white-space: pre-wrap; overflow-x: auto; color: #d4d4d4; }
+.editor-wrap { display: flex; flex: 1; overflow: hidden; }
+.line-nums { background: #1e1e1e; color: #858585; font-size: 15px; line-height: 1.6; padding: 14px 10px 14px 14px; text-align: right; user-select: none; border-right: 1px solid #3c3c3c; min-width: 42px; font-family: 'Consolas', monospace; white-space: pre; overflow: hidden; }
+.code-display { flex: 1; padding: 14px 16px; font-size: 15px; line-height: 1.6; font-family: 'Consolas', monospace; white-space: pre-wrap; overflow: auto; color: #d4d4d4; }
 .kw { color: #569cd6; } .fn { color: #dcdcaa; } .cls { color: #4ec9b0; }
 .st { color: #ce9178; } .cm { color: #6a9955; } .num { color: #b5cea8; }
 .dec { color: #c586c0; } .self { color: #9cdcfe; } .op { color: #d4d4d4; }
 .hl { background: rgba(159,239,0,0.08); display: block; margin: 0 -16px; padding: 0 16px; }
 .statusbar { background: #9fef00; color: #000; padding: 3px 14px; font-size: 11px; display: flex; gap: 16px; }
-.practice-wrap { display: flex; flex-direction: column; height: 100%; }
+.practice-wrap { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
 .practice-top { padding: 14px 18px; background: #252526; border-bottom: 1px solid #3c3c3c; font-size: 13px; color: #ccc; }
 .practice-top b { color: #9fef00; }
 .editor-zone { flex: 1; display: flex; gap: 0; min-height: 340px; }
@@ -42,14 +49,14 @@ textarea.editor { flex: 1; background: #1e1e1e; color: #d4d4d4; border: none; ou
 .output-text .err { color: #f48771; }
 .output-text .ok { color: #9fef00; }
 
-.quiz-wrap { padding: 0; }
-.quiz-nav { display: flex; align-items: center; gap: 10px; padding: 12px 18px; background: #252526; border-bottom: 1px solid #3c3c3c; }
+.quiz-wrap { padding: 0; display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+.quiz-nav { display: flex; align-items: center; gap: 10px; padding: 12px 18px; background: #252526; border-bottom: 1px solid #3c3c3c; flex-shrink: 0; }
 .qnum { color: #9fef00; font-size: 13px; }
 .prog-dots { display: flex; gap: 5px; }
 .prog-dot { width: 10px; height: 10px; border-radius: 50%; background: #3c3c3c; transition: background 0.3s; }
 .prog-dot.done { background: #9fef00; }
 .prog-dot.current { background: #569cd6; }
-.quiz-body { padding: 18px; }
+.quiz-body { padding: 18px; overflow-y: auto; flex: 1; }
 .quiz-code-block { background: #252526; border: 1px solid #3c3c3c; border-radius: 4px; padding: 14px 16px; font-size: 15px; line-height: 1.7; font-family: 'Consolas', monospace; margin-bottom: 14px; white-space: pre-wrap; }
 .quiz-code-block .kw { color: #569cd6; } .quiz-code-block .fn { color: #dcdcaa; }
 .quiz-code-block .cls { color: #4ec9b0; } .quiz-code-block .st { color: #ce9178; }
@@ -69,12 +76,90 @@ textarea.editor { flex: 1; background: #1e1e1e; color: #d4d4d4; border: none; ou
 .score-final { text-align: center; padding: 40px 20px; }
 .score-big { font-size: 52px; font-weight: 700; color: #9fef00; }
 .score-msg { font-size: 16px; color: #888; margin-top: 8px; }
-.tips-wrap { padding: 18px; }
+.tips-wrap { padding: 18px; overflow-y: auto; flex: 1; }
 .tip-block { background: #252526; border: 1px solid #3c3c3c; border-radius: 4px; padding: 14px 16px; margin-bottom: 12px; }
 .tip-block .tip-title { color: #9fef00; font-size: 13px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
 .tip-block pre { font-size: 14px; line-height: 1.7; color: #d4d4d4; white-space: pre-wrap; }
-</style>
 
+/* ── Mobile Responsive Styles ─────────────────────────────── */
+@media (max-width: 768px) {
+  /* App base */
+  #app { min-height: 100vh; }
+
+  /* Topbar: stack logo and subtitle on small screens */
+  .topbar { padding: 8px 12px; gap: 6px; }
+  .logo { font-size: 13px; letter-spacing: 1px; }
+
+  /* Nav tabs: scrollable row */
+  .nav { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tab { padding: 8px 14px; font-size: 12px; }
+
+  /* Notes: stack sidebar above code on mobile */
+  .sidebar-layout { flex-direction: column; overflow-y: auto; }
+  .sidebar { width: 100%; min-width: unset; border-right: none; border-bottom: 1px solid #3c3c3c; padding: 4px 0; display: flex; flex-wrap: wrap; gap: 2px; flex-shrink: 0; overflow-y: unset; }
+  .sidebar-title { width: 100%; padding: 6px 12px 4px; font-size: 10px; }
+  .file-item { padding: 5px 10px; font-size: 12px; border: 1px solid #3c3c3c; border-radius: 4px; margin: 2px 4px; }
+  .main-area { overflow: hidden; flex: 1; min-height: 260px; }
+  .editor-wrap { overflow: auto; }
+  .code-display { font-size: 13px; overflow: unset; }
+  .line-nums { font-size: 13px; }
+
+  /* Practice: stack editor and output vertically */
+  .editor-zone { flex-direction: column; min-height: unset; }
+  .editor-pane { border-right: none; border-bottom: 1px solid #3c3c3c; min-height: 220px; }
+  .output-pane { width: 100%; min-width: unset; min-height: 140px; }
+  textarea.editor { font-size: 13px; min-height: 180px; }
+  .output-text { font-size: 13px; }
+
+  /* Quiz: comfortable padding */
+  .quiz-body { padding: 12px; }
+  .quiz-code-block { font-size: 13px; }
+  .ans-input { font-size: 13px; }
+  .quiz-actions { gap: 8px; }
+
+  /* Tips */
+  .tips-wrap { padding: 12px; }
+  .tip-block pre { font-size: 12px; }
+
+  /* Status bar wraps */
+  .statusbar { flex-wrap: wrap; gap: 8px; font-size: 10px; }
+}
+
+@media (max-width: 480px) {
+  .logo { font-size: 12px; }
+  .tab { padding: 7px 10px; font-size: 11px; }
+  .score-big { font-size: 36px; }
+  .code-display { font-size: 12px; }
+  .quiz-code-block { font-size: 12px; padding: 10px 12px; }
+}
+
+/* Footer */
+.site-footer {
+  background: #1a1a1a;
+  border-top: 1px solid #3c3c3c;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Consolas', monospace;
+  font-size: 12px;
+  color: #555;
+  letter-spacing: 0.5px;
+}
+.site-footer .heart { color: #f48771; }
+.site-footer .author { color: #9fef00; }
+.site-footer .date-badge {
+  color: #569cd6;
+  background: #252526;
+  border: 1px solid #3c3c3c;
+  border-radius: 3px;
+  padding: 1px 7px;
+  font-size: 11px;
+}
+</style>
+</head>
+<body>
 <div id="app">
 <div class="topbar">
   <div style="display:flex;align-items:center;gap:12px">
@@ -232,12 +317,18 @@ Boat.move()           →  <span style="color:#9fef00">Sail!</span></pre>
 </div>
 </div>
 
+<!-- Footer: date auto-updates via JS -->
+<footer class="site-footer">
+  <span>Made with <span class="heart">❤️</span> by <span class="author">hasrat</span> ;)</span>
+  <span class="date-badge" id="footer-date"></span>
+</footer>
+
 <script>
 const notes = [
   {
     file:"basics.py",
     desc:"Loops, math module, range()",
-    code:`<span class="cm"># Basic Python — Loops aur Math</span>
+    code:`<span class="cm"># Basic Python — Loops and Math</span>
 <span class="kw">import</span> math
 
 <span class="cm"># range(start, end, step)</span>
@@ -246,38 +337,38 @@ const notes = [
 <span class="cm"># Output: 1 3 5 7 9</span>
 
 <span class="cm"># Math functions</span>
-math.<span class="fn">ceil</span>(<span class="num">4.2</span>)    <span class="cm"># → 5  (upar wala)</span>
-math.<span class="fn">floor</span>(<span class="num">4.9</span>)   <span class="cm"># → 4  (neeche wala)</span>
-<span class="fn">round</span>(<span class="num">4.6</span>)        <span class="cm"># → 5  (normal)</span>`
+math.<span class="fn">ceil</span>(<span class="num">4.2</span>)    <span class="cm"># → 5  (rounds up)</span>
+math.<span class="fn">floor</span>(<span class="num">4.9</span>)   <span class="cm"># → 4  (rounds down)</span>
+<span class="fn">round</span>(<span class="num">4.6</span>)        <span class="cm"># → 5  (normal rounding)</span>`
   },
   {
     file:"globalexample.py",
-    desc:"Global keyword — function mein bahar ki variable",
+    desc:"Global keyword — accessing outer variable inside a function",
     code:`x = <span class="num">100</span>
 
 <span class="kw">def</span> <span class="fn">change</span>():
-    <span class="kw">global</span> x    <span class="cm"># zaroori hai</span>
+    <span class="kw">global</span> x    <span class="cm"># required to modify outer variable</span>
     x = <span class="num">200</span>
 
 <span class="fn">print</span>(x)    <span class="cm"># 100</span>
 <span class="fn">change</span>()
 <span class="fn">print</span>(x)    <span class="cm"># 200</span>
 
-<span class="cm"># global ke baghair x change nahi hota bahar`
+<span class="cm"># without global, x does not change outside the function`
   },
   {
     file:"factorial.py",
-    desc:"Recursion — function khud ko call kare",
+    desc:"Recursion — function calls itself",
     code:`<span class="kw">def</span> <span class="fn">factorial</span>(n):
     <span class="kw">if</span> n == <span class="num">0</span> <span class="kw">or</span> n <= <span class="num">1</span>:
-        <span class="kw">return</span> <span class="num">1</span>           <span class="cm"># base case</span>
+        <span class="kw">return</span> <span class="num">1</span>           <span class="cm"># base case — stops recursion</span>
     <span class="kw">else</span>:
         <span class="kw">return</span> n * <span class="fn">factorial</span>(n - <span class="num">1</span>)
 
 <span class="fn">print</span>(<span class="fn">factorial</span>(<span class="num">5</span>))   <span class="cm"># 120</span>
 
 <span class="cm"># 5 × 4 × 3 × 2 × 1 = 120</span>
-<span class="cm"># Base case nahi → infinite loop!</span>`
+<span class="cm"># Without base case → infinite loop!</span>`
   },
   {
     file:"encapsulation.py",
@@ -285,7 +376,7 @@ math.<span class="fn">floor</span>(<span class="num">4.9</span>)   <span class="
     code:`<span class="kw">class</span> <span class="cls">Student</span>:
     <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>, name):
         <span class="self">self</span>.name = name
-        <span class="self">self</span>.__grade = <span class="num">0</span>   <span class="cm"># private!</span>
+        <span class="self">self</span>.__grade = <span class="num">0</span>   <span class="cm"># private variable!</span>
 
     <span class="kw">def</span> <span class="fn">set_grade</span>(<span class="self">self</span>, grade):
         <span class="kw">if</span> <span class="num">0</span> <= grade <= <span class="num">100</span>:
@@ -302,7 +393,7 @@ student.<span class="fn">set_grade</span>(<span class="num">85</span>)
   },
   {
     file:"inheritance.py",
-    desc:"Inheritance — super() se parent call karo",
+    desc:"Inheritance — call parent class using super()",
     code:`<span class="kw">class</span> <span class="cls">employee</span>:
     <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>, name, salary):
         <span class="self">self</span>.name = name
@@ -326,7 +417,7 @@ obj = <span class="cls">manager</span>(<span class="st">"Usman"</span>, <span cl
   },
   {
     file:"polymorphism.py",
-    desc:"Polymorphism — har class apna method likhti hai",
+    desc:"Polymorphism — each class defines its own version of a method",
     code:`<span class="kw">class</span> <span class="cls">Vehicle</span>:
     <span class="kw">def</span> <span class="fn">move</span>(<span class="self">self</span>):
         <span class="fn">print</span>(<span class="st">"Move!"</span>)
@@ -343,18 +434,18 @@ obj = <span class="cls">manager</span>(<span class="st">"Usman"</span>, <span cl
     <span class="kw">def</span> <span class="fn">move</span>(<span class="self">self</span>):
         <span class="fn">print</span>(<span class="st">"Fly!"</span>)
 
-<span class="cm"># Same method naam, alag output!</span>`
+<span class="cm"># Same method name, different output per class!</span>`
   },
   {
     file:"abstract.py",
-    desc:"Abstract class — blueprint, seedha object nahi ban sakta",
+    desc:"Abstract class — blueprint, cannot instantiate directly",
     code:`<span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod
 
 <span class="kw">class</span> <span class="cls">Payment</span>(ABC):
 
     @abstractmethod
     <span class="kw">def</span> <span class="fn">pay</span>(<span class="self">self</span>, amount):
-        <span class="kw">pass</span>   <span class="cm"># body nahi — sirf pass</span>
+        <span class="kw">pass</span>   <span class="cm"># no body — just pass</span>
 
 <span class="kw">class</span> <span class="cls">CreditCardPayment</span>(<span class="cls">Payment</span>):
     <span class="kw">def</span> <span class="fn">pay</span>(<span class="self">self</span>, amount):
@@ -371,22 +462,22 @@ p2.<span class="fn">pay</span>(<span class="num">1000</span>)   <span class="cm"
   },
   {
     file:"staticKeyword.py",
-    desc:"Static variable — class level, object bina access",
+    desc:"Static variable — class level, accessible without an object",
     code:`<span class="kw">class</span> <span class="cls">Employee</span>:
-    salary = <span class="num">1000</span>   <span class="cm"># static/class variable</span>
+    salary = <span class="num">1000</span>   <span class="cm"># static / class variable</span>
 
     <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>, name, salary):
         <span class="self">self</span>.name = name
         <span class="self">self</span>.salary = salary   <span class="cm"># instance variable</span>
 
-<span class="fn">print</span>(<span class="cls">Employee</span>.salary)   <span class="cm"># 1000 (object ke bina!)</span>
+<span class="fn">print</span>(<span class="cls">Employee</span>.salary)   <span class="cm"># 1000 (without creating an object!)</span>
 
 e = <span class="cls">Employee</span>(<span class="st">"Ali"</span>, <span class="num">2000</span>)
-<span class="fn">print</span>(e.salary)          <span class="cm"># 2000 (instance override)</span>`
+<span class="fn">print</span>(e.salary)          <span class="cm"># 2000 (instance overrides class var)</span>`
   },
   {
     file:"dbmanager.py",
-    desc:"Method overriding — child apna connect likhta hai",
+    desc:"Method overriding — child class writes its own connect method",
     code:`<span class="kw">class</span> <span class="cls">db</span>:
     <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>):
         <span class="fn">print</span>(<span class="st">"db constructor"</span>)
@@ -396,7 +487,7 @@ e = <span class="cls">Employee</span>(<span class="st">"Ali"</span>, <span class
 <span class="kw">class</span> <span class="cls">employee</span>(<span class="cls">db</span>):
     <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>):
         <span class="fn">print</span>(<span class="st">"employee constructor"</span>)
-    <span class="kw">def</span> <span class="fn">connect</span>(<span class="self">self</span>):   <span class="cm"># override!</span>
+    <span class="kw">def</span> <span class="fn">connect</span>(<span class="self">self</span>):   <span class="cm"># overrides parent connect!</span>
         <span class="fn">print</span>(<span class="st">"employee connect"</span>)
 
 obj = <span class="cls">employee</span>()
@@ -731,4 +822,19 @@ function showFinal() {
 function restartQuiz() { score=0; answered=[]; buildQuiz(); }
 
 buildQuiz();
+
+// Auto-update footer date every second
+function updateFooterDate() {
+  const now = new Date();
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const d = `${days[now.getDay()]} ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+  const t = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const el = document.getElementById('footer-date');
+  if (el) el.textContent = `${d} · ${t}`;
+}
+updateFooterDate();
+setInterval(updateFooterDate, 1000);
 </script>
+</body>
+</html>
