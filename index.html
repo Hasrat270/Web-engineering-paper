@@ -12,21 +12,31 @@ body { display: flex; flex-direction: column; }
 .topbar { background: #2d2d2d; border-bottom: 2px solid #9fef00; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 .logo { color: #9fef00; font-size: 15px; font-weight: 700; letter-spacing: 2px; }
 .dots span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+/* ── Splash Loader ─────────────────────────── */
+#splash-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
+.spinner { width: 50px; height: 50px; border: 4px solid rgba(159, 239, 0, 0.1); border-top: 4px solid #9fef00; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+.loader-text { color: #9fef00; font-family: 'Consolas', monospace; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; animation: pulse 1.5s infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
 .nav { display: flex; background: #252526; border-bottom: 1px solid #3c3c3c; overflow-x: auto; }
 .tab { padding: 10px 20px; font-size: 13px; font-family: 'Consolas', monospace; color: #969696; cursor: pointer; border-right: 1px solid #3c3c3c; white-space: nowrap; transition: all 0.2s; border-top: 2px solid transparent; }
 .tab:hover { color: #d4d4d4; background: #2a2a2a; }
 .tab.active { color: #ffffff; background: #1e1e1e; border-top: 2px solid #9fef00; }
+/* ── Localized Editor Loader ────────────────── */
+#editor-loader { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #252526; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#editor-loader .spinner { width: 40px; height: 40px; border-top-color: #9fef00; }
+#editor-loader .loader-text { font-size: 12px; margin-top: 12px; opacity: 0.9; color: #9fef00; }
 .panel { display: none; flex: 1; overflow: hidden; flex-direction: column; }
 .panel.active { display: flex; }
 .sidebar-layout { display: flex; flex: 1; overflow: hidden; }
 .sidebar { width: 200px; min-width: 160px; background: #252526; border-right: 1px solid #3c3c3c; padding: 8px 0; flex-shrink: 0; overflow-y: auto; }
-.sidebar-title { color: #bbb; font-size: 11px; padding: 8px 14px 6px; text-transform: uppercase; letter-spacing: 1px; }
-.file-item { padding: 7px 14px; font-size: 13px; color: #ccc; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+.sidebar-title { color: #bbb; font-size: 11px; padding: 12px 20px 8px; text-transform: uppercase; letter-spacing: 1px; }
+.file-item { padding: 9px 24px; font-size: 13px; color: #ccc; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
 .file-item:hover { background: #2a2d2e; }
-.file-item.active { background: #37373d; color: #fff; }
+.file-item.active { background: #37373d; color: #fff; padding-left: 20px; border-left: 4px solid #9fef00; }
 .file-icon { color: #519aba; font-size: 12px; }
 .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.editor-header { background: #252526; border-bottom: 1px solid #3c3c3c; padding: 6px 14px; font-size: 12px; color: #969696; display: flex; align-items: center; gap: 8px; }
+.editor-header { background: #252526; border-bottom: 1px solid #3c3c3c; padding: 8px 24px; font-size: 12px; color: #969696; display: flex; align-items: center; gap: 8px; }
 .editor-wrap { display: flex; flex: 1; overflow: hidden; }
 .line-nums { background: #1e1e1e; color: #858585; font-size: 15px; line-height: 1.6; padding: 14px 10px 14px 14px; text-align: right; user-select: none; border-right: 1px solid #3c3c3c; min-width: 42px; font-family: 'Consolas', monospace; white-space: pre; overflow: hidden; }
 .code-display { flex: 1; padding: 14px 16px; font-size: 15px; line-height: 1.6; font-family: 'Consolas', monospace; white-space: pre-wrap; overflow: auto; color: #d4d4d4; }
@@ -36,11 +46,13 @@ body { display: flex; flex-direction: column; }
 .hl { background: rgba(159,239,0,0.08); display: block; margin: 0 -16px; padding: 0 16px; }
 .statusbar { background: #9fef00; color: #000; padding: 3px 14px; font-size: 11px; display: flex; gap: 16px; }
 .practice-wrap { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
-.practice-top { padding: 14px 18px; background: #252526; border-bottom: 1px solid #3c3c3c; font-size: 13px; color: #ccc; }
+.practice-top { padding: 14px 18px; background: #252526; border-bottom: 1px solid #3c3c3c; font-size: 13px; color: #ccc; flex-shrink: 0; }
 .practice-top b { color: #9fef00; }
-.editor-zone { flex: 1; display: flex; gap: 0; min-height: 340px; }
-.editor-pane { flex: 1; display: flex; flex-direction: column; border-right: 1px solid #3c3c3c; }
-.pane-title { background: #252526; padding: 6px 14px; font-size: 11px; color: #969696; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #3c3c3c; display: flex; justify-content: space-between; align-items: center; }
+.practice-body { flex: 1; overflow: hidden; display: flex; flex-direction: column; padding: 14px; background: #1a1a1a; }
+.practice-card { flex: 1; display: flex; flex-direction: column; background: #252526; border: 1px solid #3c3c3c; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+.editor-zone { flex: 1; display: flex; gap: 0; overflow: hidden; }
+.editor-pane { flex: 1; display: flex; flex-direction: column; border-right: 1px solid #3c3c3c; position: relative; }
+.pane-title { background: #252526; padding: 8px 20px; font-size: 11px; color: #969696; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #3c3c3c; display: flex; justify-content: space-between; align-items: center; }
 .pane-title button { background: #9fef00; color: #000; border: none; padding: 3px 12px; border-radius: 3px; font-size: 11px; cursor: pointer; font-family: 'Consolas', monospace; font-weight: 700; }
 .pane-title button:hover { background: #7bc800; }
 textarea.editor { flex: 1; background: #1e1e1e; color: #d4d4d4; border: none; outline: none; font-family: 'Consolas', 'Courier New', monospace; font-size: 15px; line-height: 1.6; padding: 14px 16px; resize: none; width: 100%; }
@@ -105,6 +117,7 @@ textarea.editor { flex: 1; background: #1e1e1e; color: #d4d4d4; border: none; ou
   .line-nums { font-size: 13px; }
 
   /* Practice: stack editor and output vertically */
+  .practice-body { padding: 8px; }
   .editor-zone { flex-direction: column; min-height: unset; }
   .editor-pane { border-right: none; border-bottom: 1px solid #3c3c3c; min-height: 220px; }
   .output-pane { width: 100%; min-width: unset; min-height: 140px; }
@@ -120,6 +133,10 @@ textarea.editor { flex: 1; background: #1e1e1e; color: #d4d4d4; border: none; ou
   /* Tips */
   .tips-wrap { padding: 12px; }
   .tip-block pre { font-size: 12px; }
+
+  /* CodeMirror mobile font */
+  .CodeMirror { font-size: 13px !important; }
+  .CodeMirror-gutters { min-width: 40px !important; }
 
   /* Status bar wraps */
   .statusbar { flex-wrap: wrap; gap: 8px; font-size: 10px; }
@@ -157,16 +174,68 @@ textarea.editor { flex: 1; background: #1e1e1e; color: #d4d4d4; border: none; ou
   padding: 1px 7px;
   font-size: 11px;
 }
+
+/* ── CodeMirror VS Code Dark Theme ─────────────────────────── */
+.CodeMirror {
+  flex: 1 !important;
+  height: 100% !important;
+  font-family: 'Consolas', 'Courier New', monospace !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+  background: #1e1e1e !important;
+  color: #d4d4d4 !important;
+}
+.CodeMirror-scroll { min-height: 0 !important; overflow-y: auto !important; }
+.CodeMirror-gutters { background: #1e1e1e !important; border-right: 1px solid #3c3c3c !important; width: 50px !important; }
+.CodeMirror-linenumber { color: #858585 !important; padding: 0 0 0 12px !important; width: 50px !important; text-align: left !important; }
+.CodeMirror-lines { padding: 14px 0 14px 70px !important; }
+.CodeMirror-cursor { border-left: 2px solid #aeafad !important; }
+.CodeMirror-selected { background: rgba(38,79,120,0.55) !important; }
+.CodeMirror-activeline-background { background: rgba(159,239,0,0.04) !important; }
+.CodeMirror-matchingbracket { color: #fff !important; background: rgba(159,239,0,0.2) !important; }
+/* Token colors — identical to VS Code Dark+ */
+.cm-keyword   { color: #569cd6 !important; }
+.cm-builtin   { color: #4ec9b0 !important; }
+.cm-def       { color: #dcdcaa !important; }
+.cm-variable  { color: #9cdcfe !important; }
+.cm-variable-2{ color: #9cdcfe !important; }
+.cm-property  { color: #9cdcfe !important; }
+.cm-string    { color: #ce9178 !important; }
+.cm-string-2  { color: #ce9178 !important; }
+.cm-number    { color: #b5cea8 !important; }
+.cm-comment   { color: #6a9955 !important; font-style: italic; }
+.cm-operator  { color: #d4d4d4 !important; }
+.cm-bracket   { color: #ffd700 !important; }
+.cm-atom      { color: #569cd6 !important; }
+.cm-meta      { color: #d4d4d4 !important; }
+/* Autocomplete dropdown */
+.CodeMirror-hints {
+  background: #252526 !important;
+  border: 1px solid #3c3c3c !important;
+  font-family: 'Consolas', monospace !important;
+  font-size: 13px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5) !important;
+}
+.CodeMirror-hint { color: #d4d4d4 !important; padding: 3px 10px !important; }
+.CodeMirror-hint-active { background: #094771 !important; color: #fff !important; }
 </style>
+<!-- CodeMirror CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
 </head>
 <body>
+<div id="splash-loader">
+  <div class="spinner"></div>
+  <div class="loader-text">Loading Assets...</div>
+</div>
 <div id="app">
 <div class="topbar">
   <div style="display:flex;align-items:center;gap:12px">
     <div class="dots"><span style="background:#ff5f57"></span><span style="background:#ffbd2e"></span><span style="background:#28c840"></span></div>
     <div class="logo">PYTHON EXAM LAB</div>
   </div>
-  <div style="color:#6a9955;font-size:12px">kal ka exam — sab topics cover</div>
+  <div style="color:#6a9955;font-size:12px">Exam Preparation Lab — Comprehensive Review</div>
 </div>
 <div class="nav">
   <div class="tab active" onclick="switchTab('notes',this)">📄 Notes</div>
@@ -222,39 +291,31 @@ textarea.editor { flex: 1; background: #1e1e1e; color: #d4d4d4; border: none; ou
 <div id="practice" class="panel">
   <div class="practice-wrap">
     <div class="practice-top">
-      <b>Practice Area</b> — apna Python code likho aur Run karo &nbsp;|&nbsp;
-      <span style="color:#888">W3Schools style — live output right side</span>
+      <b>Practice Area</b> — Write your Python code and Run &nbsp;|&nbsp;
+      <span style="color:#888">Live output on the right side</span>
     </div>
-    <div class="editor-zone">
-      <div class="editor-pane">
-        <div class="pane-title">
-          <span>editor — main.py</span>
-          <button onclick="runCode()">▶ Run</button>
+    <div class="practice-body">
+      <div class="practice-card">
+        <div class="editor-zone">
+          <div class="editor-pane">
+            <div id="editor-loader">
+              <div class="spinner"></div>
+              <div class="loader-text">Loading Workspace...</div>
+            </div>
+            <div class="pane-title">
+              <span>editor — main.py</span>
+              <button onclick="runCode()">▶ Run</button>
+            </div>
+            <textarea id="practice-editor" class="editor"># write code here</textarea>
+          </div>
+          <div class="output-pane">
+            <div class="pane-title"><span>output</span></div>
+            <div class="output-text" id="practice-output"><span style="color:#6a9955"># Output will appear here...</span></div>
+          </div>
         </div>
-        <textarea class="editor" id="practice-editor" spellcheck="false"># Yahan apna code likho!
-# Example: Abstract class
-
-from abc import ABC, abstractmethod
-
-class Payment(ABC):
-    @abstractmethod
-    def pay(self, amount):
-        pass
-
-class CreditCard(Payment):
-    def pay(self, amount):
-        print(f"Paid {amount} using Credit Card")
-
-p = CreditCard()
-p.pay(500)
-</textarea>
-      </div>
-      <div class="output-pane">
-        <div class="pane-title"><span>output</span></div>
-        <div class="output-text" id="practice-output"><span style="color:#6a9955"># Output yahan aayega...</span></div>
+        <div class="statusbar"><span>Python Simulator</span><span>Note: simplified — actual Python behavior approximated</span></div>
       </div>
     </div>
-    <div class="statusbar"><span>Python Simulator</span><span>Note: simplified — actual Python behavior approximated</span></div>
   </div>
 </div>
 
@@ -274,44 +335,70 @@ p.pay(500)
 <div id="tips" class="panel">
   <div class="tips-wrap">
     <div class="tip-block">
-      <div class="tip-title">Exam Format (Sir ne bataya)</div>
-      <pre>→  3 questions likhne hain
-→  5 sy 6 ka output likhna hoga
-→  In files se aayega: abstract, inheritance,
-   encapsulation, polymorphism, recursion, global</pre>
+      <div class="tip-title">Recommended Study Guide</div>
+      <pre>→  Focus on 3 main long questions
+→  Practice outputs for 5-6 small snippets
+→  Core topics: Abstract classes, Inheritance,
+   Encapsulation, Polymorphism, Recursion, Global Scope</pre>
     </div>
     <div class="tip-block">
-      <div class="tip-title">Sabse Zaroori Syntax</div>
-      <pre><span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod   <span class="cm"># abstract ke liye</span>
-<span class="kw">class</span> <span class="cls">MyClass</span>(ABC):                    <span class="cm"># ABC inherit karo</span>
-    @abstractmethod                      <span class="cm"># decorator zaroori</span>
+      <div class="tip-title">Essential Syntax Patterns</div>
+      <pre><span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod   <span class="cm"># For abstract classes</span>
+<span class="kw">class</span> <span class="cls">MyClass</span>(ABC):                    <span class="cm"># Inherit from ABC</span>
+    @abstractmethod                      <span class="cm"># Required decorator</span>
     <span class="kw">def</span> <span class="fn">method</span>(self): <span class="kw">pass</span>
 
-<span class="kw">class</span> <span class="cls">Child</span>(<span class="cls">Parent</span>):                   <span class="cm"># inheritance</span>
+<span class="kw">class</span> <span class="cls">Child</span>(<span class="cls">Parent</span>):                   <span class="cm"># Inheritance</span>
     <span class="kw">def</span> <span class="fn">__init__</span>(self, a, b):
-        <span class="fn">super</span>().__init__(a, b)           <span class="cm"># parent call</span>
+        <span class="fn">super</span>().__init__(a, b)           <span class="cm"># Call parent constructor</span>
 
-self.__variable = <span class="num">0</span>                    <span class="cm"># private (__ double)</span>
-<span class="kw">global</span> x                               <span class="cm"># function mein bahar ki var</span></pre>
+self.__variable = <span class="num">0</span>                    <span class="cm"># Private (double underscore)</span>
+<span class="kw">global</span> x                               <span class="cm"># Access global var inside function</span></pre>
     </div>
     <div class="tip-block">
-      <div class="tip-title">Common Mistakes</div>
-      <pre><span style="color:#f48771">✗</span>  _init_   →  <span class="kw" style="color:#9fef00">✓</span>  __init__   (do underscore dono taraf)
-<span style="color:#f48771">✗</span>  _grade   →  <span class="kw" style="color:#9fef00">✓</span>  __grade    (private ke liye 2 underscore)
+      <div class="tip-title">Avoid Common Pitfalls</div>
+      <pre><span style="color:#f48771">✗</span>  _init_   →  <span class="kw" style="color:#9fef00">✓</span>  __init__   (Double underscores on both sides)
+<span style="color:#f48771">✗</span>  _grade   →  <span class="kw" style="color:#9fef00">✓</span>  __grade    (Use 2 underscores for true private)
 <span style="color:#f48771">✗</span>  super(Parent).__init__()
            →  <span class="kw" style="color:#9fef00">✓</span>  super().__init__()
-<span style="color:#f48771">✗</span>  abstract method mein body
-           →  <span class="kw" style="color:#9fef00">✓</span>  sirf pass likhna hai</pre>
+<span style="color:#f48771">✗</span>  Abstract method body
+           →  <span class="kw" style="color:#9fef00">✓</span>  Always use 'pass' or '...'</pre>
     </div>
     <div class="tip-block">
-      <div class="tip-title">Expected Outputs (yaad kar lo)</div>
+      <div class="tip-title">Practice Cases & Reference Outputs</div>
       <pre>factorial(5)          →  <span style="color:#9fef00">120</span>
-global x baad mein    →  <span style="color:#9fef00">200</span>
-student grade 85      →  <span style="color:#9fef00">Passed</span>
-Employee.salary       →  <span style="color:#9fef00">1000</span>
-manager salary 100000 →  <span style="color:#9fef00">95000.0</span>
-CreditCard pay(500)   →  <span style="color:#9fef00">Paid 500 using Credit Card</span>
-Boat.move()           →  <span style="color:#9fef00">Sail!</span></pre>
+global x modification →  <span style="color:#9fef00">200</span>
+Encapsulation grade   →  <span style="color:#9fef00">Passed / Failed</span>
+Static attribute      →  <span style="color:#9fef00">className.attribute</span>
+Method Overriding     →  <span style="color:#9fef00">Child's method executes first</span></pre>
+    </div>
+    <div class="tip-block">
+      <div class="tip-title">Advanced OOP: MRO & Visibility</div>
+      <pre><span class="cm"># MRO (Method Resolution Order)</span>
+<span class="kw">class</span> <span class="cls">C</span>(<span class="cls">A</span>, <span class="cls">B</span>): <span class="kw">pass</span>   <span class="cm"># Searches C -> A -> B</span>
+
+<span class="cm"># Access Modifiers</span>
+self.public = <span class="num">1</span>      <span class="cm"># Accessible everywhere</span>
+self._protected = <span class="num">2</span>   <span class="cm"># Internal use (convention)</span>
+self.__private = <span class="num">3</span>    <span class="cm"># Name mangling (hard to access)</span></pre>
+    </div>
+    <div class="tip-block">
+      <div class="tip-title">Useful Built-in Functions</div>
+      <pre><span class="fn">type</span>(obj)           <span class="cm"># Check class of object</span>
+<span class="fn">id</span>(obj)             <span class="cm"># Get memory address (unique ID)</span>
+<span class="fn">isinstance</span>(obj, <span class="cls">cls</span>) <span class="cm"># True if obj is of class cls</span>
+<span class="fn">len</span>(obj)            <span class="cm"># Length of string, list, etc.</span>
+<span class="fn">dir</span>(obj)            <span class="cm"># List all attributes/methods</span></pre>
+    </div>
+    <div class="tip-block">
+      <div class="tip-title">Logic & Recursion Guide</div>
+      <pre><span class="cm"># Short-circuiting</span>
+x = True <span class="kw">or</span> heavy_func() <span class="cm"># heavy_func NO run!</span>
+y = False <span class="kw">and</span> heavy_func() <span class="cm"># heavy_func NO run!</span>
+
+<span class="cm"># Recursion Essentials</span>
+1. Base Case: stops the function (e.g., if n &lt;= 1)
+2. Recursive Case: calls itself with smaller input</pre>
     </div>
   </div>
 </div>
@@ -499,106 +586,138 @@ obj.<span class="fn">connect</span>()
 
 function showNote(idx, el) {
   document.querySelectorAll('.file-item').forEach(f=>f.classList.remove('active'));
-  el.classList.add('active');
+  if (el) el.classList.add('active');
+  else {
+    const items = document.querySelectorAll('.file-item');
+    if (items[idx]) items[idx].classList.add('active');
+  }
   const n = notes[idx];
   document.getElementById('note-filename').textContent = n.file;
   document.getElementById('note-desc').textContent = n.desc;
   document.getElementById('note-code').innerHTML = n.code;
   const lines = (n.code.match(/\n/g)||[]).length + 1;
   document.getElementById('note-lines').textContent = Array.from({length:lines},(_,i)=>i+1).join('\n');
+  localStorage.setItem('pe_note_idx', idx);
 }
-showNote(0, document.querySelector('.file-item'));
 
 function switchTab(id, el) {
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  el.classList.add('active');
+  
+  if (el) el.classList.add('active');
+  else {
+    const tabs = document.querySelectorAll('.tab');
+    const target = Array.from(tabs).find(t => t.innerText.toLowerCase().includes(id.toLowerCase()) || t.getAttribute('onclick').includes(id));
+    if (target) target.classList.add('active');
+  }
+  localStorage.setItem('pe_tab', id);
 }
 
-// PRACTICE RUNNER — simplified Python sim
 function runCode() {
-  const code = document.getElementById('practice-editor').value;
+  const code = (typeof cmEditor !== 'undefined') ? cmEditor.getValue() : document.getElementById('practice-editor').value;
   const out = document.getElementById('practice-output');
-  const lines = [];
+  const prints = [];
+  const fakePrint = (...args) => prints.push(args.map(String).join(' '));
+
   try {
-    const prints = [];
-    const fakePrint = (...args) => prints.push(args.map(String).join(' '));
-    const transformed = code
-      .replace(/print\s*\(/g, '__p(')
-      .replace(/f"([^"]*)"/g, (m,s) => '`'+s.replace(/\{/g,'${')+'`')
-      .replace(/f'([^']*)'/g, (m,s) => '`'+s.replace(/\{/g,'${')+'`')
-      .replace(/from abc import.*\n/g,'')
-      .replace(/@abstractmethod\n/g,'')
-      .replace(/\(ABC\)/g,'()')
-      .replace(/class (\w+)\((\w+)\)/g,'class $1 extends $2')
-      .replace(/def (\w+)\(self(?:,\s*([^)]*))?\)/g, (m,fn,args) => {
-        const a = args ? args.trim() : '';
-        return `${fn}(${a})`;
-      })
-      .replace(/self\./g,'this.')
-      .replace(/super\(\)\.__init__\(([^)]*)\)/g, 'super($1)')
-      .replace(/\bpass\b/g,'')
-      .replace(/elif /g,'else if ')
-      .replace(/:\s*\n/g,'{\n').replace(/\n(\s*)((?!.*\{)[^\n]+)\n(\s{0,})(def |class |if |else|elif|for |while |return|print|[a-zA-Z])/g,
-        (m) => m);
-    const jsCode = pythonToJS(code);
+    const jsCode = transpilePython(code);
     const fn = new Function('__p', jsCode);
     fn(fakePrint);
-    out.innerHTML = prints.length ? prints.map(l=>`<span class="ok">${escHtml(l)}</span>`).join('\n') : '<span style="color:#888"># (no output)</span>';
+    if (prints.length) {
+      out.innerHTML = prints.map(l => `<span class="ok">${escHtml(l)}</span>`).join('\n');
+      speakFunny('success');
+    } else {
+      out.innerHTML = '<span style="color:#888"># Execution finished (no output)</span>';
+    }
   } catch(e) {
-    out.innerHTML = `<span class="err">Error: ${escHtml(e.message)}\n\nNote: Yeh simplified simulator hai.\nSahi result ke liye actual Python chalao.</span>`;
+    console.error(e);
+    out.innerHTML = `<span class="err">Simulation Error: ${escHtml(e.message)}</span>
+<div style="margin-top:10px;font-size:12px;color:#888;line-height:1.4">
+  This is a simplified web-based simulator. For advanced Python features (like complex list comprehensions or specific libraries), please use a real Python environment.
+</div>`;
+    speakFunny('error');
   }
+}
+
+function transpilePython(py) {
+  let lines = py.split('\n');
+  let js = '';
+  let indentStack = [0];
+
+  lines.forEach(line => {
+    let trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith('import ') || trimmed.startsWith('from ') || trimmed.startsWith('@')) return;
+
+    // Handle indentation
+    let indent = line.search(/\S/);
+    while (indent < indentStack[indentStack.length - 1]) {
+      js += '}\n';
+      indentStack.pop();
+    }
+
+    let l = line
+      .replace(/print\s*\((.*)\)/g, '__p($1)')
+      .replace(/f"([^"]*)"/g, (m,s) => '`'+s.replace(/\{/g,'${')+'`')
+      .replace(/f'([^']*)'/g, (m,s) => '`'+s.replace(/\{/g,'${')+'`')
+      .replace(/self\./g, 'this.')
+      .replace(/super\(\)\.__init__\(([^)]*)\)/g, 'super($1)')
+      .replace(/def\s+(\w+)\s*\(([^)]*)\):/, (m, name, args) => {
+        let cleanArgs = args.replace(/\bself\b,?\s*/, '').trim();
+        return `function ${name}(${cleanArgs}) {`;
+      })
+      .replace(/class\s+(\w+)(?:\(([^)]+)\))?\s*:/, (m, name, base) => {
+        let extendsPart = (base && base !== 'ABC' && base !== 'object') ? ` extends ${base}` : '';
+        return `class ${name}${extendsPart} {`;
+      })
+      .replace(/(if|elif|else|for|while)(.*):/, (m, kw, cond) => {
+        let keyword = kw === 'elif' ? 'else if' : kw === 'else' ? 'else' : kw;
+        let c = cond.trim();
+        // Simple for-in range conversion
+        if (kw === 'for' && c.includes(' in range(')) {
+          let parts = c.match(/(\w+)\s+in\s+range\((.*)\)/);
+          if (parts) {
+            let r = parts[2].split(',').map(x => x.trim());
+            let start = r.length > 1 ? r[0] : '0';
+            let end = r.length > 1 ? r[1] : r[0];
+            let step = r.length > 2 ? r[2] : '1';
+            return `for (let ${parts[1]} = ${start}; ${parts[1]} < ${end}; ${parts[1]} += ${step}) {`;
+          }
+        }
+        return `${keyword} ${c ? '(' + c + ')' : ''} {`;
+      })
+      .replace(/\bpass\b/g, '')
+      .replace(/\band\b/g, ' && ')
+      .replace(/\bor\b/g, ' || ')
+      .replace(/\bnot\b/g, ' ! ')
+      .replace(/\bNone\b/g, 'null')
+      .replace(/\bTrue\b/g, 'true')
+      .replace(/\bFalse\b/g, 'false');
+
+    // If it's a structural line that already added a {, update stack
+    if (l.trim().endsWith('{')) {
+      indentStack.push(indent + 1); // push a nominal higher value
+    }
+    
+    // Add raw line if no structural change happened but it's not empty
+    if (l === line) {
+      js += line + ';\n';
+    } else {
+      js += l + '\n';
+    }
+  });
+
+  while (indentStack.length > 1) {
+    js += '}\n';
+    indentStack.pop();
+  }
+
+  return js;
 }
 
 function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function pythonToJS(code) {
-  const outputs = [];
-  const lines2 = code.split('\n');
-  let result = '';
-  const printRegex = /^\s*print\((.+)\)\s*$/;
-  const vars = {};
-
-  // Quick simulation for common patterns
-  let scope = {};
-
-  // factorial
-  if (code.includes('factorial') && code.includes('factorial(5)')) { outputs.push('120'); }
-  // global
-  if (code.includes('global x') && code.includes('x = 200')) { outputs.push('100\n200'); }
-  // Student get_status
-  if (code.includes('get_status') && code.includes('set_grade(85)')) { outputs.push('Passed'); }
-  if (code.includes('get_status') && code.includes('set_grade(30)')) { outputs.push('Failed'); }
-  // CreditCard pay
-  if (code.includes('CreditCardPayment') && code.includes('pay(500)')) { outputs.push('Paid 500 using Credit Card'); }
-  if (code.includes('PaypalPayment') && code.includes('pay(1000)')) { outputs.push('Paid 1000 using PayPal'); }
-  // Employee static
-  if (code.includes('Employee.salary') && !code.includes('calcSalary')) { outputs.push('1000'); }
-  // manager calcSalary
-  if (code.includes('calcSalary') && code.includes('100000')) { outputs.push('95000.0'); }
-  // dbmanager
-  if (code.includes('employee constructor') || (code.includes('class employee') && code.includes('employee connect'))) {
-    if (code.includes('obj = employee()') || code.includes('employeeObj = employee()')) {
-      outputs.push('employee constructor\nemployee connect');
-    }
-  }
-  // range loop
-  if (code.includes('range(1,10,2)') || code.includes('range(1, 10, 2)')) { outputs.push('1\n3\n5\n7\n9'); }
-  // Boat Sail
-  if (code.includes('Boat') && code.includes('move()')) { outputs.push('Sail!'); }
-  // Plane Fly
-  if (code.includes('Plane') && code.includes('move()')) { outputs.push('Fly!'); }
-  // daily employee
-  if (code.includes('dailyEmployee') && code.includes('paySalary(1000)')) { outputs.push('Paid 1000 Salary to Daily employee'); }
-
-  if (outputs.length === 0) {
-    throw new Error("Pattern recognize nahi hua. Actual Python mein chalao ya known example use karo.");
-  }
-  // Make a fake function that prints known outputs
-  const outs = outputs.join('\n');
-  return `__p(${JSON.stringify(outs)});`;
-}
+// (Old pattern matcher removed in favor of dynamic transpiler)
 
 // QUIZ
 const quizzes = [
@@ -703,7 +822,7 @@ p1.<span class="fn">pay</span>(<span class="num">500</span>)`,
 <span class="fn">print</span>(<span class="cls">Employee</span>.salary)`,
     ans:"1000",
     display:"1000",
-    hint:"Class variable directly ClassName.var se access hota hai"
+    hint:"Class variables are accessed directly via ClassName.variable_name"
   },
   {
     label:"Polymorphism",
@@ -722,7 +841,7 @@ b.<span class="fn">move</span>()
 p.<span class="fn">move</span>()`,
     ans:"Sail!\nFly!",
     display:"Sail!\nFly!",
-    hint:"Boat→Sail!, Plane→Fly! — method override"
+    hint:"Boat prints Sail!, Plane prints Fly! — demonstrating method overriding"
   },
   {
     label:"DBManager",
@@ -742,7 +861,7 @@ obj = <span class="cls">employee</span>()
 obj.<span class="fn">connect</span>()`,
     ans:"employee constructor\nemployee connect",
     display:"employee constructor\nemployee connect",
-    hint:"employee ka __init__ chalega, phir employee ka override connect()"
+    hint:"The employee __init__ executes first, then the overridden connect() method"
   }
 ];
 
@@ -764,9 +883,9 @@ function showQuestion(idx) {
   });
   document.getElementById('quiz-body').innerHTML = `
     <div style="color:#9fef00;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">${q.label}</div>
-    <div style="color:#888;font-size:13px;margin-bottom:10px">Yeh code run karo — output kya hoga?</div>
+    <div style="color:#888;font-size:13px;margin-bottom:10px">Analyze this code—what will the output be?</div>
     <div class="quiz-code-block">${q.code}</div>
-    <input class="ans-input" id="ans-input" placeholder="Output yahan likho (har line alag)" autocomplete="off" ${answered[idx]?'disabled':''} value="${answered[idx]?q.display:''}">
+    <input class="ans-input" id="ans-input" placeholder="Type the output here (one line per print)" autocomplete="off" ${answered[idx]?'disabled':''} value="${answered[idx]?q.display:''}">
     <div class="quiz-actions">
       ${!answered[idx]?`<button class="btn-green" onclick="submitAns()">Submit</button><button class="btn-gray" onclick="showQHint()">Hint</button>`:''}
       ${idx < quizzes.length-1 ? `<button class="btn-green" onclick="nextQ()">Next →</button>` : `<button class="btn-green" onclick="showFinal()">Results</button>`}
@@ -776,8 +895,8 @@ function showQuestion(idx) {
   `;
   if (answered[idx]) {
     document.getElementById('result-box').innerHTML = answered[idx]==='ok'
-      ? `<div class="result-box ok">✓ Sahi tha!</div>`
-      : `<div class="result-box fail">✗ Galat tha. Sahi answer:<div class="correct-ans">${q.display}</div></div>`;
+      ? `<div class="result-box ok">✓ Correct!</div>`
+      : `<div class="result-box fail">✗ Incorrect. Correct answer:<div class="correct-ans">${q.display}</div></div>`;
   }
   const inp = document.getElementById('ans-input');
   if (inp && !answered[idx]) inp.focus();
@@ -790,12 +909,20 @@ function submitAns() {
   const user = inp.value.trim().replace(/\r\n/g,'\n');
   const q = quizzes[curQ];
   const correct = user === q.ans;
-  if (correct) { score++; answered[curQ]='ok'; } else { answered[curQ]='fail'; }
+  if (correct) { 
+    score++; 
+    answered[curQ]='ok'; 
+    speakFunny('success');
+  } else { 
+    answered[curQ]='fail'; 
+    speakFunny('error');
+  }
+  localStorage.setItem('pe_quiz', JSON.stringify({score, answered, curQ}));
   document.getElementById('quiz-score-inline').textContent = `Score: ${score}`;
   inp.disabled = true;
   document.getElementById('result-box').innerHTML = correct
-    ? `<div class="result-box ok">✓ Bilkul sahi! Shabash!</div>`
-    : `<div class="result-box fail">✗ Galat. Sahi answer:<div class="correct-ans">${q.display}</div><div style="margin-top:4px;font-size:12px;color:#888">${q.hint}</div></div>`;
+    ? `<div class="result-box ok">✓ Perfect! Excellent work.</div>`
+    : `<div class="result-box fail">✗ Incorrect. Correct answer:<div class="correct-ans">${q.display}</div><div style="margin-top:4px;font-size:12px;color:#888">Hint: ${q.hint}</div></div>`;
   document.querySelector('.quiz-actions').innerHTML = `
     ${curQ < quizzes.length-1 ? `<button class="btn-green" onclick="nextQ()">Next →</button>` : `<button class="btn-green" onclick="showFinal()">Results</button>`}
   `;
@@ -810,16 +937,21 @@ function nextQ() { if(curQ < quizzes.length-1) showQuestion(curQ+1); }
 
 function showFinal() {
   const pct = Math.round(score/quizzes.length*100);
-  const msg = score===quizzes.length ? "Zabardast! Full marks!" : score >= 6 ? "Bohot acha! Kal exam mein acha karogay!" : score >= 4 ? "Theek hai — thodi aur practice karo" : "Notes dobara dekho — phir try karo!";
+  let msg = "";
+  if (score === quizzes.length) msg = "Outstanding! Perfect Score!";
+  else if (score >= 6) msg = "Great job! You are ready for the exam!";
+  else if (score >= 4) msg = "Good effort — review the notes for even better results.";
+  else msg = "Check the notes carefully and try again!";
+
   document.getElementById('quiz-body').innerHTML = `
     <div class="score-final">
       <div class="score-big">${score} / ${quizzes.length}</div>
       <div class="score-msg">${msg}</div>
-      <div style="margin-top:20px"><button class="btn-green" onclick="restartQuiz()">Dobara Try Karo</button></div>
+      <div style="margin-top:20px"><button class="btn-green" onclick="restartQuiz()">Try Again</button></div>
     </div>`;
 }
 
-function restartQuiz() { score=0; answered=[]; buildQuiz(); }
+function restartQuiz() { score=0; answered=[]; curQ=0; localStorage.removeItem('pe_quiz'); buildQuiz(); }
 
 buildQuiz();
 
@@ -835,6 +967,177 @@ function updateFooterDate() {
 }
 updateFooterDate();
 setInterval(updateFooterDate, 1000);
+</script>
+
+<!-- CodeMirror JS — load order matters -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/anyword-hint.min.js"></script>
+<script>
+// ── CodeMirror Practice Editor Init ──────────────────────────
+let cmEditor;
+
+// Python keywords + builtins for autocomplete
+const pyWords = [
+  'False','None','True','and','as','assert','async','await','break','class',
+  'continue','def','del','elif','else','except','finally','for','from',
+  'global','if','import','in','is','lambda','nonlocal','not','or','pass',
+  'raise','return','try','while','with','yield',
+  'print','len','range','input','int','float','str','bool','list','dict',
+  'set','tuple','type','isinstance','super','self','__init__','__str__',
+  'abs','max','min','sum','sorted','reversed','enumerate','zip','map','filter',
+  'ABC','abstractmethod','open','append','extend','pop','remove','insert'
+];
+
+function pythonHint(editor) {
+  const cur = editor.getCursor();
+  const token = editor.getTokenAt(cur);
+  const word = token.string;
+  const editorWords = editor.getValue().match(/[a-zA-Z_]\w*/g) || [];
+  const all = [...new Set([...pyWords, ...editorWords])];
+  const list = all.filter(w => w.startsWith(word) && w !== word);
+  return {
+    list,
+    from: CodeMirror.Pos(cur.line, token.start),
+    to: CodeMirror.Pos(cur.line, cur.ch)
+  };
+}
+
+(function initCM() {
+  let attempts = 0;
+  const maxAttempts = 25;
+
+  function tryInit() {
+    const ta = document.getElementById('practice-editor');
+    if (!ta || typeof CodeMirror === 'undefined') {
+      attempts++;
+      if (attempts < maxAttempts) {
+        setTimeout(tryInit, 200);
+      } else {
+        const eSplash = document.getElementById('editor-loader');
+        if (eSplash) {
+          eSplash.querySelector('.loader-text').textContent = 'Check internet connection';
+          setTimeout(() => { eSplash.style.opacity='0'; setTimeout(()=>eSplash.remove(),400); }, 2000);
+        }
+      }
+      return;
+    }
+
+    // Initialize CodeMirror
+    cmEditor = CodeMirror.fromTextArea(ta, {
+      mode: 'python',
+      lineNumbers: true,
+      indentUnit: 4,
+      tabSize: 4,
+      indentWithTabs: false,
+      autoCloseBrackets: true,
+      matchBrackets: true,
+      styleActiveLine: true,
+      lineWrapping: false,
+      extraKeys: {
+        'Ctrl-Space': function(cm) {
+          CodeMirror.showHint(cm, pythonHint, { completeSingle: false });
+        },
+        'Tab': function(cm) {
+          cm.somethingSelected() ? cm.indentSelection('add') : cm.replaceSelection('    ');
+        }
+      }
+    });
+
+    cmEditor.on('keyup', function(cm, e) {
+      const k = e.key;
+      if (k && k.length === 1 && /[a-zA-Z_.]/.test(k) && !cm.state.completionActive) {
+        CodeMirror.showHint(cm, pythonHint, { completeSingle: false });
+      }
+    });
+
+    cmEditor.on('change', () => {
+      localStorage.setItem('pe_code', cmEditor.getValue());
+    });
+
+    restoreState();
+
+    // Hide localized editor loader
+    const eSplash = document.getElementById('editor-loader');
+    if (eSplash) {
+      setTimeout(() => {
+        eSplash.style.opacity = '0';
+        setTimeout(() => eSplash.remove(), 300);
+      }, 500);
+    }
+  }
+
+  function restoreState() {
+    const savedCode = localStorage.getItem('pe_code');
+    if (savedCode) cmEditor.setValue(savedCode);
+    else cmEditor.setValue('# write code here\n');
+
+    const savedTab = localStorage.getItem('pe_tab');
+    if (savedTab) switchTab(savedTab, null);
+
+    const savedNote = localStorage.getItem('pe_note_idx');
+    if (savedNote !== null) showNote(parseInt(savedNote), null);
+    else showNote(0, document.querySelector('.file-item'));
+
+    const savedQuiz = localStorage.getItem('pe_quiz');
+    if (savedQuiz) {
+      const state = JSON.parse(savedQuiz);
+      score = state.score;
+      answered = state.answered;
+      curQ = state.curQ;
+      document.getElementById('quiz-score-inline').textContent = `Score: ${score}`;
+      showQuestion(curQ);
+    }
+  }
+
+  // Start initialization
+  tryInit();
+
+  // Global loader hide
+  window.onload = () => {
+    const qSplash = document.getElementById('splash-loader');
+    if (qSplash) {
+      setTimeout(() => {
+        qSplash.style.opacity = '0';
+        setTimeout(() => qSplash.remove(), 500);
+      }, 1000);
+    }
+  };
+})();
+
+// ── Funny Voice Feedback System ──────────────────────
+function speakFunny(type) {
+  if (!('speechSynthesis' in window)) return;
+  
+  const successLines = [
+    "Wah bhai wah! Kya baat hai!",
+    "Bilkul sahi! Shabash mere sher!",
+    "Maza aa gaya! Zabardast code hai!",
+    "Oho! Hasrat ka cheela kamaal kar gaya!"
+  ];
+  const errorLines = [
+    "Abay kya kar raha hai? Programming chorr de bhai!",
+    "Bilkul ghalat! Dimagh kahan hai tera?",
+    "Error aa gaya! Galti sudhaaro varna fail ho jaogay!",
+    "Ye kya kachra code likha hai? Dobara sahi karo!"
+  ];
+
+  const lines = type === 'success' ? successLines : errorLines;
+  const msg = new SpeechSynthesisUtterance(lines[Math.floor(Math.random() * lines.length)]);
+  
+  // Try to find a Hindi/Urdu voice
+  const voices = window.speechSynthesis.getVoices();
+  const urduVoice = voices.find(v => v.lang.startsWith('hi') || v.lang.startsWith('ur'));
+  if (urduVoice) msg.voice = urduVoice;
+  
+  msg.pitch = 1.2; 
+  msg.rate = 1.0;
+  window.speechSynthesis.speak(msg);
+}
 </script>
 </body>
 </html>
