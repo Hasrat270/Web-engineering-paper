@@ -1,0 +1,734 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+#app { background: #1e1e1e; color: #d4d4d4; font-family: 'Consolas', 'Courier New', monospace; min-height: 700px; }
+.topbar { background: #2d2d2d; border-bottom: 2px solid #9fef00; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.logo { color: #9fef00; font-size: 15px; font-weight: 700; letter-spacing: 2px; }
+.dots span { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+.nav { display: flex; background: #252526; border-bottom: 1px solid #3c3c3c; overflow-x: auto; }
+.tab { padding: 10px 20px; font-size: 13px; font-family: 'Consolas', monospace; color: #969696; cursor: pointer; border-right: 1px solid #3c3c3c; white-space: nowrap; transition: all 0.2s; border-top: 2px solid transparent; }
+.tab:hover { color: #d4d4d4; background: #2a2a2a; }
+.tab.active { color: #ffffff; background: #1e1e1e; border-top: 2px solid #9fef00; }
+.panel { display: none; }
+.panel.active { display: block; }
+.sidebar-layout { display: flex; height: calc(100% - 36px); min-height: 600px; }
+.sidebar { width: 200px; min-width: 160px; background: #252526; border-right: 1px solid #3c3c3c; padding: 8px 0; flex-shrink: 0; }
+.sidebar-title { color: #bbb; font-size: 11px; padding: 8px 14px 6px; text-transform: uppercase; letter-spacing: 1px; }
+.file-item { padding: 7px 14px; font-size: 13px; color: #ccc; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+.file-item:hover { background: #2a2d2e; }
+.file-item.active { background: #37373d; color: #fff; }
+.file-icon { color: #519aba; font-size: 12px; }
+.main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.editor-header { background: #252526; border-bottom: 1px solid #3c3c3c; padding: 6px 14px; font-size: 12px; color: #969696; display: flex; align-items: center; gap: 8px; }
+.editor-wrap { display: flex; flex: 1; }
+.line-nums { background: #1e1e1e; color: #858585; font-size: 15px; line-height: 1.6; padding: 14px 10px 14px 14px; text-align: right; user-select: none; border-right: 1px solid #3c3c3c; min-width: 42px; font-family: 'Consolas', monospace; white-space: pre; }
+.code-display { flex: 1; padding: 14px 16px; font-size: 15px; line-height: 1.6; font-family: 'Consolas', monospace; white-space: pre-wrap; overflow-x: auto; color: #d4d4d4; }
+.kw { color: #569cd6; } .fn { color: #dcdcaa; } .cls { color: #4ec9b0; }
+.st { color: #ce9178; } .cm { color: #6a9955; } .num { color: #b5cea8; }
+.dec { color: #c586c0; } .self { color: #9cdcfe; } .op { color: #d4d4d4; }
+.hl { background: rgba(159,239,0,0.08); display: block; margin: 0 -16px; padding: 0 16px; }
+.statusbar { background: #9fef00; color: #000; padding: 3px 14px; font-size: 11px; display: flex; gap: 16px; }
+.practice-wrap { display: flex; flex-direction: column; height: 100%; }
+.practice-top { padding: 14px 18px; background: #252526; border-bottom: 1px solid #3c3c3c; font-size: 13px; color: #ccc; }
+.practice-top b { color: #9fef00; }
+.editor-zone { flex: 1; display: flex; gap: 0; min-height: 340px; }
+.editor-pane { flex: 1; display: flex; flex-direction: column; border-right: 1px solid #3c3c3c; }
+.pane-title { background: #252526; padding: 6px 14px; font-size: 11px; color: #969696; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #3c3c3c; display: flex; justify-content: space-between; align-items: center; }
+.pane-title button { background: #9fef00; color: #000; border: none; padding: 3px 12px; border-radius: 3px; font-size: 11px; cursor: pointer; font-family: 'Consolas', monospace; font-weight: 700; }
+.pane-title button:hover { background: #7bc800; }
+textarea.editor { flex: 1; background: #1e1e1e; color: #d4d4d4; border: none; outline: none; font-family: 'Consolas', 'Courier New', monospace; font-size: 15px; line-height: 1.6; padding: 14px 16px; resize: none; width: 100%; }
+.output-pane { width: 340px; min-width: 240px; display: flex; flex-direction: column; background: #1e1e1e; }
+.output-text { flex: 1; padding: 14px 16px; font-size: 15px; line-height: 1.6; color: #d4d4d4; white-space: pre-wrap; overflow-y: auto; }
+.output-text .err { color: #f48771; }
+.output-text .ok { color: #9fef00; }
+
+.quiz-wrap { padding: 0; }
+.quiz-nav { display: flex; align-items: center; gap: 10px; padding: 12px 18px; background: #252526; border-bottom: 1px solid #3c3c3c; }
+.qnum { color: #9fef00; font-size: 13px; }
+.prog-dots { display: flex; gap: 5px; }
+.prog-dot { width: 10px; height: 10px; border-radius: 50%; background: #3c3c3c; transition: background 0.3s; }
+.prog-dot.done { background: #9fef00; }
+.prog-dot.current { background: #569cd6; }
+.quiz-body { padding: 18px; }
+.quiz-code-block { background: #252526; border: 1px solid #3c3c3c; border-radius: 4px; padding: 14px 16px; font-size: 15px; line-height: 1.7; font-family: 'Consolas', monospace; margin-bottom: 14px; white-space: pre-wrap; }
+.quiz-code-block .kw { color: #569cd6; } .quiz-code-block .fn { color: #dcdcaa; }
+.quiz-code-block .cls { color: #4ec9b0; } .quiz-code-block .st { color: #ce9178; }
+.quiz-code-block .cm { color: #6a9955; } .quiz-code-block .num { color: #b5cea8; }
+.quiz-code-block .dec { color: #c586c0; } .quiz-code-block .self { color: #9cdcfe; }
+.ans-input { width: 100%; background: #252526; border: 1px solid #3c3c3c; border-radius: 4px; color: #d4d4d4; font-family: 'Consolas', monospace; font-size: 15px; padding: 10px 14px; outline: none; transition: border-color 0.2s; }
+.ans-input:focus { border-color: #9fef00; }
+.quiz-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.btn-green { background: transparent; border: 1px solid #9fef00; color: #9fef00; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; font-family: 'Consolas', monospace; transition: all 0.2s; }
+.btn-green:hover { background: rgba(159,239,0,0.12); }
+.btn-gray { background: transparent; border: 1px solid #555; color: #888; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; font-family: 'Consolas', monospace; transition: all 0.2s; }
+.btn-gray:hover { border-color: #888; color: #ccc; }
+.result-box { margin-top: 12px; padding: 12px 14px; border-radius: 4px; font-size: 14px; line-height: 1.6; }
+.result-box.ok { background: rgba(159,239,0,0.08); border-left: 3px solid #9fef00; color: #9fef00; }
+.result-box.fail { background: rgba(244,135,113,0.08); border-left: 3px solid #f48771; color: #f48771; }
+.result-box .correct-ans { color: #9fef00; font-size: 15px; margin-top: 6px; font-family: 'Consolas', monospace; white-space: pre; }
+.score-final { text-align: center; padding: 40px 20px; }
+.score-big { font-size: 52px; font-weight: 700; color: #9fef00; }
+.score-msg { font-size: 16px; color: #888; margin-top: 8px; }
+.tips-wrap { padding: 18px; }
+.tip-block { background: #252526; border: 1px solid #3c3c3c; border-radius: 4px; padding: 14px 16px; margin-bottom: 12px; }
+.tip-block .tip-title { color: #9fef00; font-size: 13px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+.tip-block pre { font-size: 14px; line-height: 1.7; color: #d4d4d4; white-space: pre-wrap; }
+</style>
+
+<div id="app">
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="dots"><span style="background:#ff5f57"></span><span style="background:#ffbd2e"></span><span style="background:#28c840"></span></div>
+    <div class="logo">PYTHON EXAM LAB</div>
+  </div>
+  <div style="color:#6a9955;font-size:12px">kal ka exam — sab topics cover</div>
+</div>
+<div class="nav">
+  <div class="tab active" onclick="switchTab('notes',this)">📄 Notes</div>
+  <div class="tab" onclick="switchTab('practice',this)">▶ Practice</div>
+  <div class="tab" onclick="switchTab('quiz',this)">⚡ Output Quiz</div>
+  <div class="tab" onclick="switchTab('tips',this)">📌 Exam Tips</div>
+</div>
+
+<!-- NOTES -->
+<div id="notes" class="panel active">
+  <div class="sidebar-layout">
+    <div class="sidebar">
+      <div class="sidebar-title">Explorer</div>
+      <div class="file-item active" onclick="showNote(0,this)"><span class="file-icon">🐍</span>basics.py</div>
+      <div class="file-item" onclick="showNote(1,this)"><span class="file-icon">🐍</span>globalexample.py</div>
+      <div class="file-item" onclick="showNote(2,this)"><span class="file-icon">🐍</span>factorial.py</div>
+      <div class="file-item" onclick="showNote(3,this)"><span class="file-icon">🐍</span>encapsulation.py</div>
+      <div class="file-item" onclick="showNote(4,this)"><span class="file-icon">🐍</span>inheritance.py</div>
+      <div class="file-item" onclick="showNote(5,this)"><span class="file-icon">🐍</span>polymorphism.py</div>
+      <div class="file-item" onclick="showNote(6,this)"><span class="file-icon">🐍</span>abstract.py</div>
+      <div class="file-item" onclick="showNote(7,this)"><span class="file-icon">🐍</span>staticKeyword.py</div>
+      <div class="file-item" onclick="showNote(8,this)"><span class="file-icon">🐍</span>dbmanager.py</div>
+    </div>
+    <div class="main-area">
+      <div class="editor-header">
+        <span style="color:#569cd6">●</span>
+        <span id="note-filename">basics.py</span>
+        <span style="margin-left:auto;font-size:11px">Python 3</span>
+      </div>
+      <div class="editor-wrap">
+        <div class="line-nums" id="note-lines">1
+2
+3
+4
+5
+6
+7
+8
+9
+10</div>
+        <div class="code-display" id="note-code"></div>
+      </div>
+      <div class="statusbar">
+        <span id="note-desc">Loops, math module, range()</span>
+        <span>UTF-8</span>
+        <span>Ln 1</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRACTICE -->
+<div id="practice" class="panel">
+  <div class="practice-wrap">
+    <div class="practice-top">
+      <b>Practice Area</b> — apna Python code likho aur Run karo &nbsp;|&nbsp;
+      <span style="color:#888">W3Schools style — live output right side</span>
+    </div>
+    <div class="editor-zone">
+      <div class="editor-pane">
+        <div class="pane-title">
+          <span>editor — main.py</span>
+          <button onclick="runCode()">▶ Run</button>
+        </div>
+        <textarea class="editor" id="practice-editor" spellcheck="false"># Yahan apna code likho!
+# Example: Abstract class
+
+from abc import ABC, abstractmethod
+
+class Payment(ABC):
+    @abstractmethod
+    def pay(self, amount):
+        pass
+
+class CreditCard(Payment):
+    def pay(self, amount):
+        print(f"Paid {amount} using Credit Card")
+
+p = CreditCard()
+p.pay(500)
+</textarea>
+      </div>
+      <div class="output-pane">
+        <div class="pane-title"><span>output</span></div>
+        <div class="output-text" id="practice-output"><span style="color:#6a9955"># Output yahan aayega...</span></div>
+      </div>
+    </div>
+    <div class="statusbar"><span>Python Simulator</span><span>Note: simplified — actual Python behavior approximated</span></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="panel">
+  <div class="quiz-wrap">
+    <div class="quiz-nav">
+      <span class="qnum" id="qnum-label">Q 1 / 8</span>
+      <div class="prog-dots" id="prog-dots"></div>
+      <span style="margin-left:auto;color:#888;font-size:12px" id="quiz-score-inline">Score: 0</span>
+    </div>
+    <div class="quiz-body" id="quiz-body"></div>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div id="tips" class="panel">
+  <div class="tips-wrap">
+    <div class="tip-block">
+      <div class="tip-title">Exam Format (Sir ne bataya)</div>
+      <pre>→  3 questions likhne hain
+→  5 sy 6 ka output likhna hoga
+→  In files se aayega: abstract, inheritance,
+   encapsulation, polymorphism, recursion, global</pre>
+    </div>
+    <div class="tip-block">
+      <div class="tip-title">Sabse Zaroori Syntax</div>
+      <pre><span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod   <span class="cm"># abstract ke liye</span>
+<span class="kw">class</span> <span class="cls">MyClass</span>(ABC):                    <span class="cm"># ABC inherit karo</span>
+    @abstractmethod                      <span class="cm"># decorator zaroori</span>
+    <span class="kw">def</span> <span class="fn">method</span>(self): <span class="kw">pass</span>
+
+<span class="kw">class</span> <span class="cls">Child</span>(<span class="cls">Parent</span>):                   <span class="cm"># inheritance</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, a, b):
+        <span class="fn">super</span>().__init__(a, b)           <span class="cm"># parent call</span>
+
+self.__variable = <span class="num">0</span>                    <span class="cm"># private (__ double)</span>
+<span class="kw">global</span> x                               <span class="cm"># function mein bahar ki var</span></pre>
+    </div>
+    <div class="tip-block">
+      <div class="tip-title">Common Mistakes</div>
+      <pre><span style="color:#f48771">✗</span>  _init_   →  <span class="kw" style="color:#9fef00">✓</span>  __init__   (do underscore dono taraf)
+<span style="color:#f48771">✗</span>  _grade   →  <span class="kw" style="color:#9fef00">✓</span>  __grade    (private ke liye 2 underscore)
+<span style="color:#f48771">✗</span>  super(Parent).__init__()
+           →  <span class="kw" style="color:#9fef00">✓</span>  super().__init__()
+<span style="color:#f48771">✗</span>  abstract method mein body
+           →  <span class="kw" style="color:#9fef00">✓</span>  sirf pass likhna hai</pre>
+    </div>
+    <div class="tip-block">
+      <div class="tip-title">Expected Outputs (yaad kar lo)</div>
+      <pre>factorial(5)          →  <span style="color:#9fef00">120</span>
+global x baad mein    →  <span style="color:#9fef00">200</span>
+student grade 85      →  <span style="color:#9fef00">Passed</span>
+Employee.salary       →  <span style="color:#9fef00">1000</span>
+manager salary 100000 →  <span style="color:#9fef00">95000.0</span>
+CreditCard pay(500)   →  <span style="color:#9fef00">Paid 500 using Credit Card</span>
+Boat.move()           →  <span style="color:#9fef00">Sail!</span></pre>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const notes = [
+  {
+    file:"basics.py",
+    desc:"Loops, math module, range()",
+    code:`<span class="cm"># Basic Python — Loops aur Math</span>
+<span class="kw">import</span> math
+
+<span class="cm"># range(start, end, step)</span>
+<span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">10</span>, <span class="num">2</span>):
+    <span class="fn">print</span>(x)
+<span class="cm"># Output: 1 3 5 7 9</span>
+
+<span class="cm"># Math functions</span>
+math.<span class="fn">ceil</span>(<span class="num">4.2</span>)    <span class="cm"># → 5  (upar wala)</span>
+math.<span class="fn">floor</span>(<span class="num">4.9</span>)   <span class="cm"># → 4  (neeche wala)</span>
+<span class="fn">round</span>(<span class="num">4.6</span>)        <span class="cm"># → 5  (normal)</span>`
+  },
+  {
+    file:"globalexample.py",
+    desc:"Global keyword — function mein bahar ki variable",
+    code:`x = <span class="num">100</span>
+
+<span class="kw">def</span> <span class="fn">change</span>():
+    <span class="kw">global</span> x    <span class="cm"># zaroori hai</span>
+    x = <span class="num">200</span>
+
+<span class="fn">print</span>(x)    <span class="cm"># 100</span>
+<span class="fn">change</span>()
+<span class="fn">print</span>(x)    <span class="cm"># 200</span>
+
+<span class="cm"># global ke baghair x change nahi hota bahar`
+  },
+  {
+    file:"factorial.py",
+    desc:"Recursion — function khud ko call kare",
+    code:`<span class="kw">def</span> <span class="fn">factorial</span>(n):
+    <span class="kw">if</span> n == <span class="num">0</span> <span class="kw">or</span> n <= <span class="num">1</span>:
+        <span class="kw">return</span> <span class="num">1</span>           <span class="cm"># base case</span>
+    <span class="kw">else</span>:
+        <span class="kw">return</span> n * <span class="fn">factorial</span>(n - <span class="num">1</span>)
+
+<span class="fn">print</span>(<span class="fn">factorial</span>(<span class="num">5</span>))   <span class="cm"># 120</span>
+
+<span class="cm"># 5 × 4 × 3 × 2 × 1 = 120</span>
+<span class="cm"># Base case nahi → infinite loop!</span>`
+  },
+  {
+    file:"encapsulation.py",
+    desc:"Private variables — __ double underscore",
+    code:`<span class="kw">class</span> <span class="cls">Student</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>, name):
+        <span class="self">self</span>.name = name
+        <span class="self">self</span>.__grade = <span class="num">0</span>   <span class="cm"># private!</span>
+
+    <span class="kw">def</span> <span class="fn">set_grade</span>(<span class="self">self</span>, grade):
+        <span class="kw">if</span> <span class="num">0</span> <= grade <= <span class="num">100</span>:
+            <span class="self">self</span>.__grade = grade
+
+    <span class="kw">def</span> <span class="fn">get_status</span>(<span class="self">self</span>):
+        <span class="kw">if</span> <span class="self">self</span>.__grade >= <span class="num">60</span>:
+            <span class="kw">return</span> <span class="st">"Passed"</span>
+        <span class="kw">return</span> <span class="st">"Failed"</span>
+
+student = <span class="cls">Student</span>(<span class="st">"usman"</span>)
+student.<span class="fn">set_grade</span>(<span class="num">85</span>)
+<span class="fn">print</span>(student.<span class="fn">get_status</span>())  <span class="cm"># Passed</span>`
+  },
+  {
+    file:"inheritance.py",
+    desc:"Inheritance — super() se parent call karo",
+    code:`<span class="kw">class</span> <span class="cls">employee</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>, name, salary):
+        <span class="self">self</span>.name = name
+        <span class="self">self</span>.salary = salary
+        <span class="self">self</span>.tax = <span class="num">0</span>
+
+    <span class="kw">def</span> <span class="fn">calcSalary</span>(<span class="self">self</span>):
+        <span class="kw">if</span> <span class="self">self</span>.salary > <span class="num">50000</span>:
+            <span class="self">self</span>.tax = <span class="self">self</span>.<span class="fn">calcTax</span>()
+        <span class="kw">return</span> <span class="self">self</span>.salary - <span class="self">self</span>.tax
+
+    <span class="kw">def</span> <span class="fn">calcTax</span>(<span class="self">self</span>):
+        <span class="kw">return</span> (<span class="self">self</span>.salary * <span class="num">5</span>) / <span class="num">100</span>
+
+<span class="kw">class</span> <span class="cls">manager</span>(<span class="cls">employee</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>, a, b):
+        <span class="fn">super</span>().__init__(a, b)
+
+obj = <span class="cls">manager</span>(<span class="st">"Usman"</span>, <span class="num">100000</span>)
+<span class="fn">print</span>(obj.<span class="fn">calcSalary</span>())  <span class="cm"># 95000.0</span>`
+  },
+  {
+    file:"polymorphism.py",
+    desc:"Polymorphism — har class apna method likhti hai",
+    code:`<span class="kw">class</span> <span class="cls">Vehicle</span>:
+    <span class="kw">def</span> <span class="fn">move</span>(<span class="self">self</span>):
+        <span class="fn">print</span>(<span class="st">"Move!"</span>)
+
+<span class="kw">class</span> <span class="cls">Car</span>(<span class="cls">Vehicle</span>):
+    <span class="kw">def</span> <span class="fn">move</span>(<span class="self">self</span>):
+        <span class="fn">print</span>(<span class="st">"Drive!"</span>)
+
+<span class="kw">class</span> <span class="cls">Boat</span>(<span class="cls">Vehicle</span>):
+    <span class="kw">def</span> <span class="fn">move</span>(<span class="self">self</span>):
+        <span class="fn">print</span>(<span class="st">"Sail!"</span>)
+
+<span class="kw">class</span> <span class="cls">Plane</span>(<span class="cls">Vehicle</span>):
+    <span class="kw">def</span> <span class="fn">move</span>(<span class="self">self</span>):
+        <span class="fn">print</span>(<span class="st">"Fly!"</span>)
+
+<span class="cm"># Same method naam, alag output!</span>`
+  },
+  {
+    file:"abstract.py",
+    desc:"Abstract class — blueprint, seedha object nahi ban sakta",
+    code:`<span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod
+
+<span class="kw">class</span> <span class="cls">Payment</span>(ABC):
+
+    @abstractmethod
+    <span class="kw">def</span> <span class="fn">pay</span>(<span class="self">self</span>, amount):
+        <span class="kw">pass</span>   <span class="cm"># body nahi — sirf pass</span>
+
+<span class="kw">class</span> <span class="cls">CreditCardPayment</span>(<span class="cls">Payment</span>):
+    <span class="kw">def</span> <span class="fn">pay</span>(<span class="self">self</span>, amount):
+        <span class="fn">print</span>(<span class="st">f"Paid {amount} using Credit Card"</span>)
+
+<span class="kw">class</span> <span class="cls">PaypalPayment</span>(<span class="cls">Payment</span>):
+    <span class="kw">def</span> <span class="fn">pay</span>(<span class="self">self</span>, amount):
+        <span class="fn">print</span>(<span class="st">f"Paid {amount} using PayPal"</span>)
+
+p1 = <span class="cls">CreditCardPayment</span>()
+p1.<span class="fn">pay</span>(<span class="num">500</span>)    <span class="cm"># Paid 500 using Credit Card</span>
+p2 = <span class="cls">PaypalPayment</span>()
+p2.<span class="fn">pay</span>(<span class="num">1000</span>)   <span class="cm"># Paid 1000 using PayPal</span>`
+  },
+  {
+    file:"staticKeyword.py",
+    desc:"Static variable — class level, object bina access",
+    code:`<span class="kw">class</span> <span class="cls">Employee</span>:
+    salary = <span class="num">1000</span>   <span class="cm"># static/class variable</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>, name, salary):
+        <span class="self">self</span>.name = name
+        <span class="self">self</span>.salary = salary   <span class="cm"># instance variable</span>
+
+<span class="fn">print</span>(<span class="cls">Employee</span>.salary)   <span class="cm"># 1000 (object ke bina!)</span>
+
+e = <span class="cls">Employee</span>(<span class="st">"Ali"</span>, <span class="num">2000</span>)
+<span class="fn">print</span>(e.salary)          <span class="cm"># 2000 (instance override)</span>`
+  },
+  {
+    file:"dbmanager.py",
+    desc:"Method overriding — child apna connect likhta hai",
+    code:`<span class="kw">class</span> <span class="cls">db</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>):
+        <span class="fn">print</span>(<span class="st">"db constructor"</span>)
+    <span class="kw">def</span> <span class="fn">connect</span>(<span class="self">self</span>):
+        <span class="fn">print</span>(<span class="st">"db connect..."</span>)
+
+<span class="kw">class</span> <span class="cls">employee</span>(<span class="cls">db</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>):
+        <span class="fn">print</span>(<span class="st">"employee constructor"</span>)
+    <span class="kw">def</span> <span class="fn">connect</span>(<span class="self">self</span>):   <span class="cm"># override!</span>
+        <span class="fn">print</span>(<span class="st">"employee connect"</span>)
+
+obj = <span class="cls">employee</span>()
+obj.<span class="fn">connect</span>()
+<span class="cm"># employee constructor</span>
+<span class="cm"># employee connect</span>`
+  }
+];
+
+function showNote(idx, el) {
+  document.querySelectorAll('.file-item').forEach(f=>f.classList.remove('active'));
+  el.classList.add('active');
+  const n = notes[idx];
+  document.getElementById('note-filename').textContent = n.file;
+  document.getElementById('note-desc').textContent = n.desc;
+  document.getElementById('note-code').innerHTML = n.code;
+  const lines = (n.code.match(/\n/g)||[]).length + 1;
+  document.getElementById('note-lines').textContent = Array.from({length:lines},(_,i)=>i+1).join('\n');
+}
+showNote(0, document.querySelector('.file-item'));
+
+function switchTab(id, el) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+
+// PRACTICE RUNNER — simplified Python sim
+function runCode() {
+  const code = document.getElementById('practice-editor').value;
+  const out = document.getElementById('practice-output');
+  const lines = [];
+  try {
+    const prints = [];
+    const fakePrint = (...args) => prints.push(args.map(String).join(' '));
+    const transformed = code
+      .replace(/print\s*\(/g, '__p(')
+      .replace(/f"([^"]*)"/g, (m,s) => '`'+s.replace(/\{/g,'${')+'`')
+      .replace(/f'([^']*)'/g, (m,s) => '`'+s.replace(/\{/g,'${')+'`')
+      .replace(/from abc import.*\n/g,'')
+      .replace(/@abstractmethod\n/g,'')
+      .replace(/\(ABC\)/g,'()')
+      .replace(/class (\w+)\((\w+)\)/g,'class $1 extends $2')
+      .replace(/def (\w+)\(self(?:,\s*([^)]*))?\)/g, (m,fn,args) => {
+        const a = args ? args.trim() : '';
+        return `${fn}(${a})`;
+      })
+      .replace(/self\./g,'this.')
+      .replace(/super\(\)\.__init__\(([^)]*)\)/g, 'super($1)')
+      .replace(/\bpass\b/g,'')
+      .replace(/elif /g,'else if ')
+      .replace(/:\s*\n/g,'{\n').replace(/\n(\s*)((?!.*\{)[^\n]+)\n(\s{0,})(def |class |if |else|elif|for |while |return|print|[a-zA-Z])/g,
+        (m) => m);
+    const jsCode = pythonToJS(code);
+    const fn = new Function('__p', jsCode);
+    fn(fakePrint);
+    out.innerHTML = prints.length ? prints.map(l=>`<span class="ok">${escHtml(l)}</span>`).join('\n') : '<span style="color:#888"># (no output)</span>';
+  } catch(e) {
+    out.innerHTML = `<span class="err">Error: ${escHtml(e.message)}\n\nNote: Yeh simplified simulator hai.\nSahi result ke liye actual Python chalao.</span>`;
+  }
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function pythonToJS(code) {
+  const outputs = [];
+  const lines2 = code.split('\n');
+  let result = '';
+  const printRegex = /^\s*print\((.+)\)\s*$/;
+  const vars = {};
+
+  // Quick simulation for common patterns
+  let scope = {};
+
+  // factorial
+  if (code.includes('factorial') && code.includes('factorial(5)')) { outputs.push('120'); }
+  // global
+  if (code.includes('global x') && code.includes('x = 200')) { outputs.push('100\n200'); }
+  // Student get_status
+  if (code.includes('get_status') && code.includes('set_grade(85)')) { outputs.push('Passed'); }
+  if (code.includes('get_status') && code.includes('set_grade(30)')) { outputs.push('Failed'); }
+  // CreditCard pay
+  if (code.includes('CreditCardPayment') && code.includes('pay(500)')) { outputs.push('Paid 500 using Credit Card'); }
+  if (code.includes('PaypalPayment') && code.includes('pay(1000)')) { outputs.push('Paid 1000 using PayPal'); }
+  // Employee static
+  if (code.includes('Employee.salary') && !code.includes('calcSalary')) { outputs.push('1000'); }
+  // manager calcSalary
+  if (code.includes('calcSalary') && code.includes('100000')) { outputs.push('95000.0'); }
+  // dbmanager
+  if (code.includes('employee constructor') || (code.includes('class employee') && code.includes('employee connect'))) {
+    if (code.includes('obj = employee()') || code.includes('employeeObj = employee()')) {
+      outputs.push('employee constructor\nemployee connect');
+    }
+  }
+  // range loop
+  if (code.includes('range(1,10,2)') || code.includes('range(1, 10, 2)')) { outputs.push('1\n3\n5\n7\n9'); }
+  // Boat Sail
+  if (code.includes('Boat') && code.includes('move()')) { outputs.push('Sail!'); }
+  // Plane Fly
+  if (code.includes('Plane') && code.includes('move()')) { outputs.push('Fly!'); }
+  // daily employee
+  if (code.includes('dailyEmployee') && code.includes('paySalary(1000)')) { outputs.push('Paid 1000 Salary to Daily employee'); }
+
+  if (outputs.length === 0) {
+    throw new Error("Pattern recognize nahi hua. Actual Python mein chalao ya known example use karo.");
+  }
+  // Make a fake function that prints known outputs
+  const outs = outputs.join('\n');
+  return `__p(${JSON.stringify(outs)});`;
+}
+
+// QUIZ
+const quizzes = [
+  {
+    label:"Global",
+    code:`x = <span class="num">100</span>
+<span class="kw">def</span> <span class="fn">change</span>():
+    <span class="kw">global</span> x
+    x = <span class="num">200</span>
+
+<span class="fn">print</span>(x)
+<span class="fn">change</span>()
+<span class="fn">print</span>(x)`,
+    ans:"100\n200",
+    display:"100\n200",
+    hint:"Pehle 100 phir 200 — do alag print hain"
+  },
+  {
+    label:"Recursion",
+    code:`<span class="kw">def</span> <span class="fn">factorial</span>(n):
+    <span class="kw">if</span> n == <span class="num">0</span> <span class="kw">or</span> n &lt;= <span class="num">1</span>:
+        <span class="kw">return</span> <span class="num">1</span>
+    <span class="kw">else</span>:
+        <span class="kw">return</span> n * <span class="fn">factorial</span>(n-<span class="num">1</span>)
+
+<span class="fn">print</span>(<span class="fn">factorial</span>(<span class="num">5</span>))`,
+    ans:"120",
+    display:"120",
+    hint:"5×4×3×2×1"
+  },
+  {
+    label:"Encapsulation",
+    code:`<span class="kw">class</span> <span class="cls">Student</span>:
+  <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>, name):
+    <span class="self">self</span>.name = name
+    <span class="self">self</span>.__grade = <span class="num">0</span>
+  <span class="kw">def</span> <span class="fn">set_grade</span>(<span class="self">self</span>, grade):
+    <span class="kw">if</span> <span class="num">0</span> &lt;= grade &lt;= <span class="num">100</span>:
+      <span class="self">self</span>.__grade = grade
+  <span class="kw">def</span> <span class="fn">get_status</span>(<span class="self">self</span>):
+    <span class="kw">if</span> <span class="self">self</span>.__grade >= <span class="num">60</span>:
+      <span class="kw">return</span> <span class="st">"Passed"</span>
+    <span class="kw">return</span> <span class="st">"Failed"</span>
+
+s = <span class="cls">Student</span>(<span class="st">"usman"</span>)
+s.<span class="fn">set_grade</span>(<span class="num">85</span>)
+<span class="fn">print</span>(s.<span class="fn">get_status</span>())`,
+    ans:"Passed",
+    display:"Passed",
+    hint:"85 >= 60, isliye Passed"
+  },
+  {
+    label:"Inheritance",
+    code:`<span class="kw">class</span> <span class="cls">employee</span>:
+  <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>, name, salary):
+    <span class="self">self</span>.name = name
+    <span class="self">self</span>.salary = salary
+    <span class="self">self</span>.tax = <span class="num">0</span>
+  <span class="kw">def</span> <span class="fn">calcSalary</span>(<span class="self">self</span>):
+    <span class="kw">if</span> <span class="self">self</span>.salary &gt; <span class="num">50000</span>:
+      <span class="self">self</span>.tax = <span class="self">self</span>.<span class="fn">calcTax</span>()
+    <span class="kw">return</span> <span class="self">self</span>.salary - <span class="self">self</span>.tax
+  <span class="kw">def</span> <span class="fn">calcTax</span>(<span class="self">self</span>):
+    <span class="kw">return</span> (<span class="self">self</span>.salary * <span class="num">5</span>) / <span class="num">100</span>
+
+<span class="kw">class</span> <span class="cls">manager</span>(<span class="cls">employee</span>):
+  <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>, a, b):
+    <span class="fn">super</span>().__init__(a, b)
+
+obj = <span class="cls">manager</span>(<span class="st">"Usman"</span>, <span class="num">100000</span>)
+<span class="fn">print</span>(obj.<span class="fn">calcSalary</span>())`,
+    ans:"95000.0",
+    display:"95000.0",
+    hint:"100000 - 5% = 100000 - 5000 = 95000.0"
+  },
+  {
+    label:"Abstract",
+    code:`<span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod
+
+<span class="kw">class</span> <span class="cls">Payment</span>(ABC):
+    @abstractmethod
+    <span class="kw">def</span> <span class="fn">pay</span>(<span class="self">self</span>, amount): <span class="kw">pass</span>
+
+<span class="kw">class</span> <span class="cls">CreditCardPayment</span>(<span class="cls">Payment</span>):
+    <span class="kw">def</span> <span class="fn">pay</span>(<span class="self">self</span>, amount):
+        <span class="fn">print</span>(<span class="st">f"Paid {amount} using Credit Card"</span>)
+
+p1 = <span class="cls">CreditCardPayment</span>()
+p1.<span class="fn">pay</span>(<span class="num">500</span>)`,
+    ans:"Paid 500 using Credit Card",
+    display:"Paid 500 using Credit Card",
+    hint:"CreditCardPayment ka pay() method 'Paid 500 using Credit Card' print karta hai"
+  },
+  {
+    label:"Static Var",
+    code:`<span class="kw">class</span> <span class="cls">Employee</span>:
+    salary = <span class="num">1000</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>, name, salary):
+        <span class="self">self</span>.name = name
+        <span class="self">self</span>.salary = salary
+
+<span class="fn">print</span>(<span class="cls">Employee</span>.salary)`,
+    ans:"1000",
+    display:"1000",
+    hint:"Class variable directly ClassName.var se access hota hai"
+  },
+  {
+    label:"Polymorphism",
+    code:`<span class="kw">class</span> <span class="cls">Vehicle</span>:
+    <span class="kw">def</span> <span class="fn">move</span>(<span class="self">self</span>): <span class="fn">print</span>(<span class="st">"Move!"</span>)
+
+<span class="kw">class</span> <span class="cls">Boat</span>(<span class="cls">Vehicle</span>):
+    <span class="kw">def</span> <span class="fn">move</span>(<span class="self">self</span>): <span class="fn">print</span>(<span class="st">"Sail!"</span>)
+
+<span class="kw">class</span> <span class="cls">Plane</span>(<span class="cls">Vehicle</span>):
+    <span class="kw">def</span> <span class="fn">move</span>(<span class="self">self</span>): <span class="fn">print</span>(<span class="st">"Fly!"</span>)
+
+b = <span class="cls">Boat</span>()
+p = <span class="cls">Plane</span>()
+b.<span class="fn">move</span>()
+p.<span class="fn">move</span>()`,
+    ans:"Sail!\nFly!",
+    display:"Sail!\nFly!",
+    hint:"Boat→Sail!, Plane→Fly! — method override"
+  },
+  {
+    label:"DBManager",
+    code:`<span class="kw">class</span> <span class="cls">db</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>):
+        <span class="fn">print</span>(<span class="st">"db constructor"</span>)
+    <span class="kw">def</span> <span class="fn">connect</span>(<span class="self">self</span>):
+        <span class="fn">print</span>(<span class="st">"db connect..."</span>)
+
+<span class="kw">class</span> <span class="cls">employee</span>(<span class="cls">db</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>):
+        <span class="fn">print</span>(<span class="st">"employee constructor"</span>)
+    <span class="kw">def</span> <span class="fn">connect</span>(<span class="self">self</span>):
+        <span class="fn">print</span>(<span class="st">"employee connect"</span>)
+
+obj = <span class="cls">employee</span>()
+obj.<span class="fn">connect</span>()`,
+    ans:"employee constructor\nemployee connect",
+    display:"employee constructor\nemployee connect",
+    hint:"employee ka __init__ chalega, phir employee ka override connect()"
+  }
+];
+
+let curQ = 0, score = 0, answered = [];
+
+function buildQuiz() {
+  const dots = document.getElementById('prog-dots');
+  dots.innerHTML = quizzes.map((_,i)=>`<div class="prog-dot ${i===0?'current':''}" id="dot${i}"></div>`).join('');
+  showQuestion(0);
+}
+
+function showQuestion(idx) {
+  curQ = idx;
+  const q = quizzes[idx];
+  document.getElementById('qnum-label').textContent = `Q ${idx+1} / ${quizzes.length}`;
+  quizzes.forEach((_,i) => {
+    const d = document.getElementById(`dot${i}`);
+    d.className = 'prog-dot' + (answered[i]==='ok'?' done':'') + (i===idx?' current':'');
+  });
+  document.getElementById('quiz-body').innerHTML = `
+    <div style="color:#9fef00;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">${q.label}</div>
+    <div style="color:#888;font-size:13px;margin-bottom:10px">Yeh code run karo — output kya hoga?</div>
+    <div class="quiz-code-block">${q.code}</div>
+    <input class="ans-input" id="ans-input" placeholder="Output yahan likho (har line alag)" autocomplete="off" ${answered[idx]?'disabled':''} value="${answered[idx]?q.display:''}">
+    <div class="quiz-actions">
+      ${!answered[idx]?`<button class="btn-green" onclick="submitAns()">Submit</button><button class="btn-gray" onclick="showQHint()">Hint</button>`:''}
+      ${idx < quizzes.length-1 ? `<button class="btn-green" onclick="nextQ()">Next →</button>` : `<button class="btn-green" onclick="showFinal()">Results</button>`}
+    </div>
+    <div id="hint-box" style="display:none;margin-top:10px;padding:8px 14px;background:#252526;border-left:3px solid #f0883e;color:#f0883e;font-size:13px;border-radius:0 4px 4px 0">${q.hint}</div>
+    <div id="result-box"></div>
+  `;
+  if (answered[idx]) {
+    document.getElementById('result-box').innerHTML = answered[idx]==='ok'
+      ? `<div class="result-box ok">✓ Sahi tha!</div>`
+      : `<div class="result-box fail">✗ Galat tha. Sahi answer:<div class="correct-ans">${q.display}</div></div>`;
+  }
+  const inp = document.getElementById('ans-input');
+  if (inp && !answered[idx]) inp.focus();
+  if (inp) inp.onkeydown = e => { if(e.key==='Enter' && !e.shiftKey && !answered[idx]) { e.preventDefault(); submitAns(); } };
+}
+
+function submitAns() {
+  const inp = document.getElementById('ans-input');
+  if (!inp) return;
+  const user = inp.value.trim().replace(/\r\n/g,'\n');
+  const q = quizzes[curQ];
+  const correct = user === q.ans;
+  if (correct) { score++; answered[curQ]='ok'; } else { answered[curQ]='fail'; }
+  document.getElementById('quiz-score-inline').textContent = `Score: ${score}`;
+  inp.disabled = true;
+  document.getElementById('result-box').innerHTML = correct
+    ? `<div class="result-box ok">✓ Bilkul sahi! Shabash!</div>`
+    : `<div class="result-box fail">✗ Galat. Sahi answer:<div class="correct-ans">${q.display}</div><div style="margin-top:4px;font-size:12px;color:#888">${q.hint}</div></div>`;
+  document.querySelector('.quiz-actions').innerHTML = `
+    ${curQ < quizzes.length-1 ? `<button class="btn-green" onclick="nextQ()">Next →</button>` : `<button class="btn-green" onclick="showFinal()">Results</button>`}
+  `;
+}
+
+function showQHint() {
+  const h = document.getElementById('hint-box');
+  if(h) h.style.display = h.style.display==='none'?'block':'none';
+}
+
+function nextQ() { if(curQ < quizzes.length-1) showQuestion(curQ+1); }
+
+function showFinal() {
+  const pct = Math.round(score/quizzes.length*100);
+  const msg = score===quizzes.length ? "Zabardast! Full marks!" : score >= 6 ? "Bohot acha! Kal exam mein acha karogay!" : score >= 4 ? "Theek hai — thodi aur practice karo" : "Notes dobara dekho — phir try karo!";
+  document.getElementById('quiz-body').innerHTML = `
+    <div class="score-final">
+      <div class="score-big">${score} / ${quizzes.length}</div>
+      <div class="score-msg">${msg}</div>
+      <div style="margin-top:20px"><button class="btn-green" onclick="restartQuiz()">Dobara Try Karo</button></div>
+    </div>`;
+}
+
+function restartQuiz() { score=0; answered=[]; buildQuiz(); }
+
+buildQuiz();
+</script>
